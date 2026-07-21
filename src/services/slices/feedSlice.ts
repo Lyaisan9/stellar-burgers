@@ -23,14 +23,6 @@ export const fetchFeeds = createAsyncThunk('feed/fetchFeeds', async () => {
   return data;
 });
 
-export const fetchUserOrders = createAsyncThunk(
-  'feed/fetchUserOrders',
-  async () => {
-    const orders = await getOrdersApi();
-    return orders;
-  }
-);
-
 const feedSlice = createSlice({
   name: 'feed',
   initialState,
@@ -50,18 +42,6 @@ const feedSlice = createSlice({
       .addCase(fetchFeeds.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Ошибка загрузки ленты';
-      })
-      .addCase(fetchUserOrders.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchUserOrders.fulfilled, (state, action) => {
-        state.loading = false;
-        state.orders = Array.isArray(action.payload) ? action.payload : [];
-      })
-      .addCase(fetchUserOrders.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.error.message || 'Ошибка загрузки истории';
       });
   },
   selectors: {

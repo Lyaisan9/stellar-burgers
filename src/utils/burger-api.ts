@@ -1,4 +1,3 @@
-import { ingredientsReducer } from 'src/services/slices/ingredientsSlice';
 import { setCookie, getCookie } from './cookie';
 import { TIngredient, TOrder, TOrdersData, TUser } from './types';
 
@@ -116,7 +115,7 @@ type TNewOrder = {
   updatedAt: string;
   number: number;
   price: number;
-  ingredients: [];
+  ingredients: string[];
 };
 
 type TNewOrderResponse = TServerResponse<{

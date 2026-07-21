@@ -52,8 +52,10 @@ export const fetchRegisterUser = createAsyncThunk(
       setCookie('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       return response;
-    } catch (error: any) {
-      if (error.message === 'User already exists') {
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Неизвестная ошибка';
+      if (message === 'User already exists') {
         return rejectWithValue(
           'Пользователь с таким email уже зарегистрирован'
         );
@@ -77,8 +79,10 @@ export const fetchLoginUser = createAsyncThunk(
       setCookie('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       return response;
-    } catch (error: any) {
-      if (error.message === 'email or password are incorrect') {
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : 'Неизвестная ошибка';
+      if (message === 'email or password are incorrect') {
         return rejectWithValue('Неверный email или пароль');
       }
       return rejectWithValue(
@@ -107,20 +111,20 @@ export const fetchLogout = createAsyncThunk('user/logout', async () =>
 interface TUserState {
   isAuthenticated: boolean;
   isAuthChecked: boolean;
-  data: TUser;
+  user: TUser;
   error: string | undefined;
-  loginUserRequest: boolean;
+  isRequesting: boolean;
 }
 
 const initialState: TUserState = {
   isAuthenticated: false,
   isAuthChecked: false,
-  data: {
+  user: {
     name: '',
     email: ''
   },
   error: undefined,
-  loginUserRequest: false
+  isRequesting: false
 };
 
 const userSlice = createSlice({
@@ -135,11 +139,11 @@ const userSlice = createSlice({
     }
   },
   selectors: {
-    selectUserData: (state) => state.data,
+    selectUserData: (state) => state.user,
     selectIsAuthenticated: (state) => state.isAuthenticated,
     selectIsAuthChecked: (state) => state.isAuthChecked,
     selectError: (state) => state.error,
-    selectLoginRequest: (state) => state.loginUserRequest
+    selectLoginRequest: (state) => state.isRequesting
   },
   extraReducers(builder) {
     builder
@@ -155,8 +159,8 @@ const userSlice = createSlice({
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.isAuthChecked = true;
-        state.data.email = action.payload.user.email;
-        state.data.name = action.payload.user.name;
+        state.user.email = action.payload.user.email;
+        state.user.name = action.payload.user.name;
         state.error = undefined;
       })
 
@@ -172,16 +176,16 @@ const userSlice = createSlice({
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
         state.isAuthChecked = true;
-        state.data = action.payload.user;
+        state.user = action.payload.user;
         state.error = undefined;
       })
 
       .addCase(fetchGetUser.pending, (state) => {
-        state.loginUserRequest = true;
+        state.isRequesting = true;
         state.isAuthenticated = false;
       })
       .addCase(fetchGetUser.rejected, (state, action) => {
-        state.loginUserRequest = false;
+        state.isRequesting = false;
         state.isAuthenticated = false;
         state.isAuthChecked = true;
         state.error =
@@ -192,39 +196,39 @@ const userSlice = createSlice({
               : action.error.message;
       })
       .addCase(fetchGetUser.fulfilled, (state, action) => {
-        state.data = action.payload.user;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
         state.isAuthChecked = true;
-        state.loginUserRequest = false;
+        state.isRequesting = false;
       })
 
       .addCase(fetchUpdateUser.pending, (state) => {
-        state.loginUserRequest = true;
+        state.isRequesting = true;
       })
       .addCase(fetchUpdateUser.rejected, (state, action) => {
-        state.loginUserRequest = true;
+        state.isRequesting = false;
         state.error =
           action.error.message === 'You should be authorised'
             ? 'Пожалуйста, авторизуйтесь'
             : action.error.message;
       })
       .addCase(fetchUpdateUser.fulfilled, (state, action) => {
-        state.data = action.payload.user;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
-        state.loginUserRequest = false;
+        state.isRequesting = false;
       })
 
       .addCase(fetchLogout.pending, (state) => {
-        state.loginUserRequest = true;
+        state.isRequesting = true;
       })
       .addCase(fetchLogout.rejected, (state, action) => {
         state.error = action.error.message;
-        state.loginUserRequest = true;
+        state.isRequesting = false;
       })
       .addCase(fetchLogout.fulfilled, (state) => {
         state.isAuthenticated = false;
-        state.data = { name: '', email: '' };
-        state.loginUserRequest = false;
+        state.user = { name: '', email: '' };
+        state.isRequesting = false;
       });
   }
 });

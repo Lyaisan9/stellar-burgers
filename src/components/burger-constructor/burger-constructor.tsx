@@ -9,7 +9,7 @@ import {
 } from '../../services/slices/constructorSlice';
 import { selectIsAuthenticated } from '../../services/slices/userSlice';
 import {
-  fetchOrderBurgerApi,
+  createOrder,
   clearOrder,
   selectOrderIsLoading,
   selectOrder
@@ -42,7 +42,7 @@ export const BurgerConstructor: FC = () => {
       ...ingredients.map((item) => item._id),
       bun._id
     ];
-    dispatch(fetchOrderBurgerApi(orderData))
+    dispatch(createOrder(orderData))
       .unwrap()
       .then(() => {
         dispatch(clearConstructor());

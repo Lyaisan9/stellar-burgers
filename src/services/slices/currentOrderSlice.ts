@@ -14,7 +14,7 @@ const initialState: ICurrentOrderSliceState = {
   error: undefined
 };
 
-export const fetchOrderBurgerApi = createAsyncThunk(
+export const createOrder = createAsyncThunk(
   'currentOrder/fetchOrderBurgerApi',
   async (data: string[]) => orderBurgerApi(data)
 );
@@ -34,14 +34,14 @@ const currentOrderSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(fetchOrderBurgerApi.pending, (state) => {
+      .addCase(createOrder.pending, (state) => {
         state.orderIsLoading = true;
       })
-      .addCase(fetchOrderBurgerApi.rejected, (state, action) => {
+      .addCase(createOrder.rejected, (state, action) => {
         state.orderIsLoading = false;
         state.error = action.error.message;
       })
-      .addCase(fetchOrderBurgerApi.fulfilled, (state, action) => {
+      .addCase(createOrder.fulfilled, (state, action) => {
         state.orderIsLoading = false;
         state.order = action.payload.order;
       });

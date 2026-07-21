@@ -23,17 +23,7 @@ export const fetchIngredients = createAsyncThunk(
 const ingredientsSlice = createSlice({
   name: 'ingredients',
   initialState,
-  reducers: {
-    getIngredients: (state) => {
-      state.isIngredientsLoading = false;
-    },
-    getIngredientsAdded: (
-      state,
-      { payload }: PayloadAction<TConstructorIngredient>
-    ) => {
-      state.ingredients.push(payload);
-    }
-  },
+  reducers: {},
   selectors: {
     selectIngredients: (state) => state.ingredients,
     selectIngredientsLoading: (state) => state.isIngredientsLoading
@@ -56,5 +46,4 @@ const ingredientsSlice = createSlice({
 
 export const { selectIngredients, selectIngredientsLoading } =
   ingredientsSlice.selectors;
-export const { getIngredients, getIngredientsAdded } = ingredientsSlice.actions;
 export const ingredientsReducer = ingredientsSlice.reducer;

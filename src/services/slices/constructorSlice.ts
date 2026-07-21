@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { TConstructorIngredient, TIngredient } from '../../utils/types';
 
-const randomId = () => crypto.randomUUID();
+const generateId = () => crypto.randomUUID();
 
 export interface IBurgerConstructorSliceState {
   constructorItems: {
@@ -26,7 +26,7 @@ const burgerConstructorSlice = createSlice({
   name: 'burgerConstructor',
   initialState,
   reducers: {
-    addIngredients: {
+    addIngredient: {
       reducer: (state, { payload }: PayloadAction<TConstructorIngredient>) => {
         if (payload.type === 'bun') {
           state.constructorItems.bun = payload;
@@ -35,11 +35,11 @@ const burgerConstructorSlice = createSlice({
         }
       },
       prepare: (ingredient: TIngredient) => ({
-        payload: { ...ingredient, id: randomId() }
+        payload: { ...ingredient, id: generateId() }
       })
     },
 
-    ingredientsToUp: (state, { payload }: PayloadAction<number>) => {
+    moveIngredientUp: (state, { payload }: PayloadAction<number>) => {
       const currentIngredient = state.constructorItems.ingredients[payload];
       const neighbourIngredient =
         state.constructorItems.ingredients[payload - 1];
@@ -52,7 +52,7 @@ const burgerConstructorSlice = createSlice({
       );
     },
 
-    ingredientsToDown: (state, { payload }: PayloadAction<number>) => {
+    moveIngredientDown: (state, { payload }: PayloadAction<number>) => {
       const currentIngredient = state.constructorItems.ingredients[payload];
       const neighbourIngredient =
         state.constructorItems.ingredients[payload + 1];
@@ -100,9 +100,9 @@ export const {
 } = burgerConstructorSlice.selectors;
 
 export const {
-  addIngredients,
-  ingredientsToUp,
-  ingredientsToDown,
+  addIngredient,
+  moveIngredientUp,
+  moveIngredientDown,
   removeIngredient,
   clearConstructor
 } = burgerConstructorSlice.actions;

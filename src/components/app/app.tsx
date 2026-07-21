@@ -13,7 +13,13 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+  useMatch
+} from 'react-router-dom';
 import { ProtectedRoute } from '../protected-route/protected-route';
 import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
@@ -39,7 +45,10 @@ const App = () => {
   const closeModal = () => {
     navigate(-1);
   };
-
+  const matchFeed = useMatch('/feed/:number');
+  const matchProfileOrders = useMatch('/profile/orders/:number');
+  const orderNumber =
+    matchFeed?.params.number || matchProfileOrders?.params.number || '';
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -114,10 +123,7 @@ const App = () => {
           <Route
             path='/feed/:number'
             element={
-              <Modal
-                title={`#${location.pathname.match(/\d+/)}`}
-                onClose={closeModal}
-              >
+              <Modal title={`#${orderNumber}`} onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
@@ -135,10 +141,7 @@ const App = () => {
           <Route
             path='/profile/orders/:number'
             element={
-              <Modal
-                title={`#${location.pathname.match(/\d+/)}`}
-                onClose={closeModal}
-              >
+              <Modal title={`#${orderNumber}`} onClose={closeModal}>
                 <OrderInfo />
               </Modal>
             }
