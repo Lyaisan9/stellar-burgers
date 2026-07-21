@@ -28,13 +28,6 @@ export const BurgerConstructor: FC = () => {
   const orderIsLoading = useSelector(selectOrderIsLoading);
   const orderModalData = useSelector(selectOrder);
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
-
-  useEffect(() => {
-    if (orderModalData && !orderIsLoading) {
-      dispatch(clearConstructor());
-    }
-  }, [orderModalData, orderIsLoading, dispatch]);
 
   const onOrderClick = () => {
     if (!isAuthenticated) {
@@ -49,12 +42,14 @@ export const BurgerConstructor: FC = () => {
       ...ingredients.map((item) => item._id),
       bun._id
     ];
-    dispatch(fetchOrderBurgerApi(orderData));
-    setIsOrderModalOpen(true);
+    dispatch(fetchOrderBurgerApi(orderData))
+      .unwrap()
+      .then(() => {
+        dispatch(clearConstructor());
+      });
   };
 
   const closeOrderModal = () => {
-    setIsOrderModalOpen(false);
     dispatch(clearOrder());
     navigate('/');
   };

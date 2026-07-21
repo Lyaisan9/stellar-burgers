@@ -10,8 +10,6 @@ import { LoginUI } from '@ui-pages';
 
 export const Login: FC = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
   const error = useSelector(selectError);
 
   const [email, setEmail] = useState('');
@@ -21,10 +19,6 @@ export const Login: FC = () => {
     e.preventDefault();
     dispatch(fetchLoginUser({ email, password }));
   };
-
-  if (isAuthenticated) {
-    navigate('/', { replace: true });
-  }
 
   return (
     <LoginUI

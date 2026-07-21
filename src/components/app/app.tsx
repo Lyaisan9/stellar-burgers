@@ -18,7 +18,7 @@ import { ProtectedRoute } from '../protected-route/protected-route';
 import { useDispatch } from '../../services/store';
 import { fetchIngredients } from '../../services/slices/ingredientsSlice';
 import { useEffect } from 'react';
-import { fetchGetUser } from '../../services/slices/userSlice';
+import { fetchGetUser, authCheckFailed } from '../../services/slices/userSlice';
 import { getCookie } from '../../utils/cookie';
 
 const App = () => {
@@ -31,8 +31,14 @@ const App = () => {
     dispatch(fetchIngredients());
     if (getCookie('accessToken')) {
       dispatch(fetchGetUser());
+    } else {
+      dispatch(authCheckFailed());
     }
   }, []);
+
+  const closeModal = () => {
+    navigate(-1);
+  };
 
   return (
     <div className={styles.app}>
@@ -110,9 +116,7 @@ const App = () => {
             element={
               <Modal
                 title={`#${location.pathname.match(/\d+/)}`}
-                onClose={() => {
-                  history.back();
-                }}
+                onClose={closeModal}
               >
                 <OrderInfo />
               </Modal>
@@ -122,12 +126,7 @@ const App = () => {
           <Route
             path='/ingredients/:id'
             element={
-              <Modal
-                title={'Детали ингредиента'}
-                onClose={() => {
-                  history.back();
-                }}
-              >
+              <Modal title={'Детали ингредиента'} onClose={closeModal}>
                 <IngredientDetails />
               </Modal>
             }
@@ -138,9 +137,7 @@ const App = () => {
             element={
               <Modal
                 title={`#${location.pathname.match(/\d+/)}`}
-                onClose={() => {
-                  history.back();
-                }}
+                onClose={closeModal}
               >
                 <OrderInfo />
               </Modal>

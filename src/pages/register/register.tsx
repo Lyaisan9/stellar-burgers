@@ -10,9 +10,6 @@ import { RegisterUI } from '@ui-pages';
 
 export const Register: FC = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isAuthenticated = useSelector(selectIsAuthenticated);
-  const error = useSelector(selectError);
 
   const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,10 +19,6 @@ export const Register: FC = () => {
     e.preventDefault();
     dispatch(fetchRegisterUser({ name: userName, email, password }));
   };
-
-  if (isAuthenticated) {
-    navigate('/', { replace: true });
-  }
 
   return (
     <RegisterUI

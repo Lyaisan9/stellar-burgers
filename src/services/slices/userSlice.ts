@@ -106,6 +106,7 @@ export const fetchLogout = createAsyncThunk('user/logout', async () =>
 
 interface TUserState {
   isAuthenticated: boolean;
+  isAuthChecked: boolean;
   data: TUser;
   error: string | undefined;
   loginUserRequest: boolean;
@@ -113,6 +114,7 @@ interface TUserState {
 
 const initialState: TUserState = {
   isAuthenticated: false,
+  isAuthChecked: false,
   data: {
     name: '',
     email: ''
@@ -127,11 +129,15 @@ const userSlice = createSlice({
   reducers: {
     clearErrorMessage: (state) => {
       state.error = undefined;
+    },
+    authCheckFailed: (state) => {
+      state.isAuthChecked = true;
     }
   },
   selectors: {
     selectUserData: (state) => state.data,
     selectIsAuthenticated: (state) => state.isAuthenticated,
+    selectIsAuthChecked: (state) => state.isAuthChecked,
     selectError: (state) => state.error,
     selectLoginRequest: (state) => state.loginUserRequest
   },
@@ -148,6 +154,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchRegisterUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
+        state.isAuthChecked = true;
         state.data.email = action.payload.user.email;
         state.data.name = action.payload.user.name;
         state.error = undefined;
@@ -164,6 +171,7 @@ const userSlice = createSlice({
       })
       .addCase(fetchLoginUser.fulfilled, (state, action) => {
         state.isAuthenticated = true;
+        state.isAuthChecked = true;
         state.data = action.payload.user;
         state.error = undefined;
       })
@@ -175,6 +183,7 @@ const userSlice = createSlice({
       .addCase(fetchGetUser.rejected, (state, action) => {
         state.loginUserRequest = false;
         state.isAuthenticated = false;
+        state.isAuthChecked = true;
         state.error =
           action.error.message === 'You should be authorised'
             ? 'Пожалуйста, авторизуйтесь'
@@ -185,6 +194,7 @@ const userSlice = createSlice({
       .addCase(fetchGetUser.fulfilled, (state, action) => {
         state.data = action.payload.user;
         state.isAuthenticated = true;
+        state.isAuthChecked = true;
         state.loginUserRequest = false;
       })
 
@@ -219,11 +229,12 @@ const userSlice = createSlice({
   }
 });
 
-export const { clearErrorMessage } = userSlice.actions;
+export const { clearErrorMessage, authCheckFailed } = userSlice.actions;
 export const {
   selectUserData,
   selectError,
   selectIsAuthenticated,
-  selectLoginRequest
+  selectLoginRequest,
+  selectIsAuthChecked
 } = userSlice.selectors;
 export const userReducer = userSlice.reducer;

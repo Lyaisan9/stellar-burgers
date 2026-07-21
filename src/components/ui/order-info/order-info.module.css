@@ -74,3 +74,13 @@
 .total {
   margin-left: auto;
 }
+
+.standalone {
+  width: 100%;
+}
+
+.standalone h2 {
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 0;
+}

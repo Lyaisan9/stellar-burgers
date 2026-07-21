@@ -4,7 +4,7 @@ import { ReactElement, useEffect } from 'react';
 import { Preloader } from '../ui/preloader';
 import { useParams } from 'react-router-dom';
 import {
-  selectIsAuthenticated,
+  selectIsAuthChecked,
   selectLoginRequest,
   selectUserData
 } from '../../services/slices/userSlice';
@@ -18,14 +18,13 @@ export const ProtectedRoute = ({
   onlyUnAuth = false,
   children
 }: ProtectedRouteProps): ReactElement => {
-  const isAuthChecked = useSelector(selectIsAuthenticated);
+  const isAuthChecked = useSelector(selectIsAuthChecked);
   const loginRequested = useSelector(selectLoginRequest);
   const user = useSelector(selectUserData).name;
   const location = useLocation();
   const from = location.state?.from || { pathname: '/' };
-  const { number } = useParams();
 
-  if (!isAuthChecked && loginRequested) {
+  if (!isAuthChecked) {
     return <Preloader />;
   }
 
@@ -34,7 +33,7 @@ export const ProtectedRoute = ({
   }
 
   if (!onlyUnAuth && !user) {
-    return <Navigate to='/login' state={{ from: location }} />;
+    return <Navigate to='/login' state={{ from: location }} replace />;
   }
 
   return children;
