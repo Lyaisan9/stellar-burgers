@@ -34,5 +34,5 @@ export type AppDispatch = typeof store.dispatch;
 
 export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
-
+(window as any).__REDUX_STORE__ = store;
 export default store;
