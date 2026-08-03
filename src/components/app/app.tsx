@@ -35,12 +35,16 @@ const App = () => {
 
   useEffect(() => {
     dispatch(fetchIngredients());
-    if (getCookie('accessToken')) {
-      dispatch(fetchGetUser());
-    } else {
-      dispatch(authCheckFailed());
-    }
+    dispatch(fetchGetUser());
   }, []);
+  // useEffect(() => {
+  //   dispatch(fetchIngredients());
+  //   if (getCookie('accessToken')) {
+  //     dispatch(fetchGetUser());
+  //   } else {
+  //     dispatch(authCheckFailed());
+  //   }
+  // }, []);
 
   const closeModal = () => {
     navigate(-1);

@@ -4,7 +4,7 @@ import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useSelector, useDispatch } from '../../services/store';
 import {
-  getUserOrders,
+  fetchOrderByNumber,
   selectOrdersIsLoading,
   selectOrders
 } from '../../services/slices/orderSlice';
@@ -21,7 +21,7 @@ export const OrderInfo: FC = () => {
   const isModalView = location.state?.background;
 
   useEffect(() => {
-    dispatch(getUserOrders(ordersNumber));
+    dispatch(fetchOrderByNumber(ordersNumber));
   }, [dispatch, ordersNumber]);
 
   const orders = useSelector(selectOrders);

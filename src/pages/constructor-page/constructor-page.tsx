@@ -14,9 +14,9 @@ import {
 export const ConstructorPage: FC = () => {
   const dispatch = useDispatch();
   const isIngredientsLoading = useSelector(selectIngredientsLoading);
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchIngredients());
+  // }, [dispatch]);
 
   return (
     <>

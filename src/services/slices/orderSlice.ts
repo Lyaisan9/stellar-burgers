@@ -15,7 +15,7 @@ const initialState: IOrderDetailsSliceState = {
   error: undefined
 };
 
-export const getUserOrders = createAsyncThunk(
+export const fetchOrderByNumber = createAsyncThunk(
   'orderDetails/fetchOrderByNumber',
   async (number: number) => getOrderByNumberApi(number)
 );
@@ -30,14 +30,14 @@ const orderDetailsSlice = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(getUserOrders.pending, (state) => {
+      .addCase(fetchOrderByNumber.pending, (state) => {
         state.orderIsLoading = true;
       })
-      .addCase(getUserOrders.rejected, (state, action) => {
+      .addCase(fetchOrderByNumber.rejected, (state, action) => {
         state.orderIsLoading = false;
         state.error = action.error.message;
       })
-      .addCase(getUserOrders.fulfilled, (state, action) => {
+      .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
         state.orderIsLoading = false;
         state.orders = action.payload.orders;
       });
